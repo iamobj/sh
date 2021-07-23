@@ -2,8 +2,8 @@ name: upload qiniu
 
 on:
   push:
-    paths:
-      - '!README.md'
+    paths-ignore:
+      - 'README.md'
 
 jobs:
   deploy:
@@ -13,6 +13,6 @@ jobs:
       - name: 检出代码到本地
         uses: actions/checkout@v2
       
-      - name: 测试1
+      - name: 测试
         run: |
           echo "${{toJSON(github.event.commits)}}"
