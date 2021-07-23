@@ -15,8 +15,12 @@ jobs:
 
       - name: 获取 diff 文件
         uses: technote-space/get-diff-action@v4
+        with: 
+          PATTERNS: |
+            !README.md
+            !.github/**
       
-      - name: 输出 diff 文件
+      - name: 输出 diff 文件1
         run: |
           echo "${{env.GIT_DIFF}}"
           echo "${{env.GIT_DIFF_FILTERED}}"
