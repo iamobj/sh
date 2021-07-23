@@ -19,5 +19,5 @@ jobs:
       - name: 输出 diff 文件
         run: |
           echo "${{env.GIT_DIFF}}"
-          echo "${{env.GIT_DIFF_FILTERED)}}"
-          echo "${{env.MATCHED_FILES)}}"
+          echo "${{env.GIT_DIFF_FILTERED}}"
+          echo "${{env.MATCHED_FILES}}"
