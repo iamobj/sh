@@ -12,8 +12,12 @@ jobs:
     steps:
       - name: 检出代码到本地
         uses: actions/checkout@v2
+
+      - name: 获取 diff 文件
+        uses: technote-space/get-diff-action@v4
       
-      - name: 测试
+      - name: 输出 diff 文件
         run: |
-          ls
-          echo "${{toJSON(github.event.commits)}}"
+          echo "${{env.GIT_DIFF}}"
+          echo "${{env.GIT_DIFF_FILTERED)}}"
+          echo "${{env.MATCHED_FILES)}}"
