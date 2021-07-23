@@ -15,4 +15,5 @@ jobs:
       
       - name: 测试
         run: |
+          ls
           echo "${{toJSON(github.event.commits)}}"
