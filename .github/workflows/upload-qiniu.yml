@@ -20,7 +20,7 @@ jobs:
             !README.md
             !.github/**
       
-      - name: 输出 diff 文件1
+      - name: 输出 diff 文件
         run: |
           echo "${{env.GIT_DIFF}}"
           echo "${{env.GIT_DIFF_FILTERED}}"
