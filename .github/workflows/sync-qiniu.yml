@@ -1,0 +1,75 @@
+name: upload qiniu
+
+on:
+  push:
+    paths-ignore:
+      - '.github/**'
+      - 'README.md'
+
+jobs:
+  # 
+  update:
+    runs-on: ubuntu-latest
+
+    env:
+      # 文件过滤规则
+      BASE_FILE_PATTERNS: sh/**
+      # 七牛云空间名称
+      QINIU_BUCKET: assetss
+    
+    steps:
+      - name: 检出代码到本地
+        uses: actions/checkout@v2
+
+      # 因为七牛云命令行工具 qsuits 依赖 java 8 及以上
+      - name: 安装 java jdk
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '8'
+          java-package: jdk
+
+      - name: 下载七牛云命令行工具 qsuits
+        run: |
+          # 下载 qsuits 执行器
+          wget --no-check-certificate "https://github.com/NigelWu95/qsuits-exec-go/raw/master/bin/qsuits_linux_amd64"
+          # 重命名为 qsuits
+          mv qsuits_linux_amd64 qsuits
+          # 给执行权限
+          chmod +x qsuits
+          # 设置默认账号 -d 参数设置为默认 其它需要认证的命令 加 -d 参数 会去默认账号的秘钥
+          ./qsuits -account=qiniu-iamc -ak=${{secrets.QINIU_AK}} -sk=${{secrets.QINIU_SK}} -d
+
+      - name: 获取改变文件
+        id: changedFiles
+        uses: jitterbit/get-changed-files@v1
+
+      - name: 过滤所有操作的改变文件
+        id: filterAll
+        uses: iamobj/action-minimatch@v1
+        with:
+          strings: ${{steps.changedFiles.outputs.all}}
+          patterns: ${{env.BASE_FILE_PATTERNS}}
+
+      - name: 过滤删除操作的改变文件
+        id: filterDel
+        uses: iamobj/action-minimatch@v1
+        with:
+          strings: ${{steps.changedFiles.outputs.removed}}
+          patterns: ${{env.BASE_FILE_PATTERNS}}
+
+      - name: 上传到七牛云
+        if: ${{steps.filterAll.outputs.files}}
+        run: |
+          # 单文件循环上传
+          for changed_file in ${{steps.filterAll.outputs.files}}; do
+            ./qsuits -d -s -process=qupload -bucket=${{env.QINIU_BUCKET}} -filepath=changed_file -key=changed_file
+          done
+
+      - name: 删除七牛云文件
+        if: ${{steps.filterDel.outputs.files}}
+        run: |
+          # 单文件循环删除
+          for changed_file in ${{steps.files.outputs.all}}; do
+            ./qsuits -d -s -process=delete -bucket=${{env.QINIU_BUCKET}} -key=changed_file
+          done
