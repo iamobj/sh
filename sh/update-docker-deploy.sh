@@ -26,5 +26,5 @@ docker pull $image_tag
 # 退出私库
 docker logout $registry_url
 
-# 启动1
+# 启动
 docker run --name $container_name $docker_run_params -d $image_tag
