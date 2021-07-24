@@ -47,7 +47,7 @@ jobs:
         uses: jitterbit/get-changed-files@v1
 
       - run: |
-          all = ${{steps.changedFiles.outputs.all}}
+          all = "${{steps.changedFiles.outputs.all}}"
           echo "${all// /,}"
           echo "${{steps.changedFiles.outputs.added}}"
       # - name: 上传到七牛云
