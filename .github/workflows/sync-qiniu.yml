@@ -45,7 +45,7 @@ jobs:
 
       - name: 过滤所有操作的改变文件
         id: filterAll
-        if: ${{steps.changedFiles.outputs.all}
+        if: ${{steps.changedFiles.outputs.all}}
         uses: iamobj/action-minimatch@v1
         with:
           strings: ${{steps.changedFiles.outputs.all}}
@@ -53,7 +53,7 @@ jobs:
 
       - name: 过滤删除操作的改变文件
         id: filterDel
-        if: ${{steps.changedFiles.outputs.removed}
+        if: ${{steps.changedFiles.outputs.removed}}
         uses: iamobj/action-minimatch@v1
         with:
           strings: ${{steps.changedFiles.outputs.removed}}
