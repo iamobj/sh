@@ -17,7 +17,7 @@ jobs:
         uses: technote-space/get-diff-action@v4
         with: 
           PATTERNS: |
-            **
+            +**
             !README.md
             !.github/**
       
@@ -26,3 +26,4 @@ jobs:
           echo "${{env.GIT_DIFF}}"
           echo "${{env.GIT_DIFF_FILTERED}}"
           echo "${{env.MATCHED_FILES}}"
+          echo "${{toJSON(github.event.commits)}}"
