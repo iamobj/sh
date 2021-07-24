@@ -18,7 +18,9 @@ jobs:
       - name: 安装 java jdk
         uses: actions/setup-java@v2
         with:
+          distribution: 'zulu'
           java-version: '8'
+          java-package: jdk
 
       - name: 下载七牛云命令行工具 qsuits
         run: |
