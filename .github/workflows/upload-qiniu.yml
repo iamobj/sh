@@ -42,7 +42,9 @@ jobs:
           SEPARATOR: ','
           # git diff --diff-filter 参数值，默认是 AMRC
           DIFF_FILTER: 'AMRCD'
-      
+      - run: |
+          echo "${{env.GIT_DIFF}}"
+          echo "${{env.GIT_DIFF_FILTERED}}"
       - name: 上传到七牛云
         run: |
           ./qsuits -process=qupload -path=./ -f-suffix=${{env.GIT_DIFF}} -keep-path=false -add-prefix=sh/ -bucket=assetss -ak=${{secrets.QINIU_AK}} -sk=${{secrets.QINIU_SK}}
