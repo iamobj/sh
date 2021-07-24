@@ -63,7 +63,7 @@ jobs:
         if: ${{steps.filterAll.outputs.files}}
         run: |
           # 单文件循环上传
-          for changed_file in "${{steps.filterAll.outputs.files}}"; do
+          for changed_file in ${{steps.filterAll.outputs.files}}; do
             ./qsuits -d -s -process=qupload -bucket=${{env.QINIU_BUCKET}} -filepath=$changed_file -key=$changed_file
           done
 
@@ -71,6 +71,6 @@ jobs:
         if: ${{steps.filterDel.outputs.files}}
         run: |
           # 单文件循环删除
-          for changed_file in "${{steps.files.outputs.all}}"; do
+          for changed_file in ${{steps.files.outputs.all}}; do
             ./qsuits -d -s -process=delete -bucket=${{env.QINIU_BUCKET}} -key=$changed_file
           done
