@@ -47,9 +47,9 @@ jobs:
         uses: jitterbit/get-changed-files@v1
 
       - run: |
-          all = ${{steps.files.outputs.all}}
+          all = ${{steps.changedFiles.outputs.all}}
           echo "${all// /,}"
-          echo "${{steps.files.outputs.added}}"
+          echo "${{steps.changedFiles.outputs.added}}"
       # - name: 上传到七牛云
       #   run: |
       #     ./qsuits -process=qupload -path=./ -f-suffix=${{env.GIT_DIFF}} -keep-path=false -add-prefix=sh/ -bucket=assetss -ak=${{secrets.QINIU_AK}} -sk=${{secrets.QINIU_SK}}
