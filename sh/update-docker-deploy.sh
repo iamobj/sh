@@ -79,9 +79,12 @@ docker logout $opt_registry_url
 if [ $opt_stock -ne 0 ]; then
   # 获取镜像关键字 去除tag
   keyword=${opt_image_url/:*/}
+  echo "通过镜像地址解析出的镜像关键字：$keyword"
+
   # 通过关键字列出镜像所有版本的镜像
   image_ids=`docker image ls -q $keyword`
-
+  echo "查出镜像所有版本的id：$image_ids"
+  
   # 循环用的下标
   i=0
   # 接收需要删除镜像的目标ids
@@ -92,11 +95,17 @@ if [ $opt_stock -ne 0 ]; then
     if [ $i -ge $opt_stock ]; then
       target_image_ids="$target_image_ids $image_id"
     fi
+
     let i++
   done
 
+  echo "需要删除的镜像id：$target_image_ids"
+
   # 删除
-  docker image rm $target_image_ids
+  if [ ${#target_image_ids} -gt 0 ]; then
+    docker image rm $target_image_ids
+  fi
+
 fi
 
 # 启动
