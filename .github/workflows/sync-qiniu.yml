@@ -35,15 +35,15 @@ jobs:
         id: changedFiles
         uses: jitterbit/get-changed-files@v1
 
-      - name: 过滤所有操作的改变文件
-        id: filterAll
-        if: ${{steps.changedFiles.outputs.all}}
+      - name: 过滤添加、修改、重命名的改变文件
+        id: filterUpload
+        if: ${{steps.changedFiles.outputs.added_modified || steps.changedFiles.outputs.renamed}}
         uses: iamobj/action-minimatch@v1
         with:
-          strings: ${{steps.changedFiles.outputs.all}}
+          strings: ${{steps.changedFiles.outputs.added_modified' 'steps.changedFiles.outputs.renamed}}
           patterns: ${{env.BASE_FILE_PATTERNS}}
 
-      - name: 过滤删除操作的改变文件
+      - name: 过滤删除的改变文件
         id: filterDel
         if: ${{steps.changedFiles.outputs.removed}}
         uses: iamobj/action-minimatch@v1
@@ -52,10 +52,10 @@ jobs:
           patterns: ${{env.BASE_FILE_PATTERNS}}
 
       - name: 上传到七牛云
-        if: ${{steps.filterAll.outputs.files}}
+        if: ${{steps.filterUpload.outputs.files}}
         run: |
           # 单文件循环上传
-          for changed_file in ${{steps.filterAll.outputs.files}}; do
+          for changed_file in ${{steps.filterUpload.outputs.files}}; do
             ./qshell fput ${{env.QINIU_BUCKET}} $changed_file $changed_file --overwrite
           done
 
