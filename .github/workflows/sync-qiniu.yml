@@ -20,6 +20,7 @@ jobs:
       - name: 检出代码到本地
         uses: actions/checkout@v2
 
+      # qshell 使用文档 https://developer.qiniu.com/kodo/1302/qshell#5
       - name: 下载七牛云命令行工具 qshell
         run: |
           # 下载 qshell 执行器
