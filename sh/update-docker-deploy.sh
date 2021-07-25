@@ -94,6 +94,6 @@ if [ $opt_stock -ne 0 ]; then
 fi
 
 # 启动
-docker run --name $opt_container_name $opt_docker_run_args -d $image_tag
+docker run --name $opt_container_name $opt_docker_run_args -d $opt_image_url
 
 printf -- '\n'
