@@ -2,7 +2,7 @@
 
 ## 自动同步到七牛云
 
-当脚本文件有新增、修改、重命名、删除操作，[action](https://github.com/iamobj/sh/blob/main/.github/workflows/sync-qiniu.yml) 才用增量方式自动同步到七牛云空间
+当脚本文件有新增、修改、重命名、删除操作，[action](https://github.com/iamobj/sh/blob/main/.github/workflows/sync-qiniu.yml) 采用增量方式自动同步到七牛云空间
 
 > 注意：重命名操作，action 会把重命名后的文件上传上去，但旧文件还在七牛云空间里，因为没法获取到重命名文件之前的文件名，从而无法删除之前的旧文件
 
