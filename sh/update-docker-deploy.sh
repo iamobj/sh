@@ -96,7 +96,10 @@ if [ $opt_stock -ne 0 ]; then
       target_image_ids="$target_image_ids $image_id"
     fi
 
+    # 这里关闭 set -e ，因为只要命令返回结果非零，会让 set -e 捕捉到当错误处理，终止执行
+    set +e
     let i++
+    set -e
   done
 
   echo "需要删除的镜像id：$target_image_ids"
