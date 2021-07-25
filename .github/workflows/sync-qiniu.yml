@@ -63,6 +63,6 @@ jobs:
         if: ${{steps.filterDel.outputs.files}}
         run: |
           # 单文件循环删除
-          for changed_file in ${{steps.files.outputs.all}}; do
+          for changed_file in ${{steps.filterDel.outputs.files}}; do
             ./qshell delete ${{env.QINIU_BUCKET}} $changed_file
           done
