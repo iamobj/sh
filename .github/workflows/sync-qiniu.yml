@@ -40,7 +40,7 @@ jobs:
         if: ${{steps.changedFiles.outputs.added_modified || steps.changedFiles.outputs.renamed}}
         uses: iamobj/action-minimatch@v1
         with:
-          strings: ${{steps.changedFiles.outputs.added_modified' 'steps.changedFiles.outputs.renamed}}
+          strings: ${{steps.changedFiles.outputs.added_modified steps.changedFiles.outputs.renamed}}
           patterns: ${{env.BASE_FILE_PATTERNS}}
 
       - name: 过滤删除的改变文件
