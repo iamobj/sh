@@ -24,8 +24,8 @@ jobs:
         run: |
           # 下载 qshell 执行器
           wget --no-check-certificate "https://github.com/qiniu/qshell/releases/download/v2.6.2/qshell-v2.6.2-linux-amd64.tar.gz"
-          # 解压 qshell-v2.6.2-linux-amd64.tar.gz
-          tar zxvf
+          # 解压
+          tar zxvf qshell-v2.6.2-linux-amd64.tar.gz
           # 给执行权限
           chmod +x qshell
           # 设置账户
