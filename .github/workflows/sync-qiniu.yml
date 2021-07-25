@@ -20,24 +20,16 @@ jobs:
       - name: 检出代码到本地
         uses: actions/checkout@v2
 
-      # 因为七牛云命令行工具 qsuits 依赖 java 8 及以上
-      - name: 安装 java jdk
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'zulu'
-          java-version: '8'
-          java-package: jdk
-
-      - name: 下载七牛云命令行工具 qsuits
+      - name: 下载七牛云命令行工具 qshell
         run: |
-          # 下载 qsuits 执行器
-          wget --no-check-certificate "https://github.com/NigelWu95/qsuits-exec-go/raw/master/bin/qsuits_linux_amd64"
-          # 重命名为 qsuits
-          mv qsuits_linux_amd64 qsuits
+          # 下载 qshell 执行器
+          wget --no-check-certificate "https://github.com/qiniu/qshell/releases/download/v2.6.2/qshell-v2.6.2-linux-amd64.tar.gz"
+          # 解压 qshell-v2.6.2-linux-amd64.tar.gz
+          tar zxvf
           # 给执行权限
-          chmod +x qsuits
-          # 设置默认账号 -d 参数设置为默认 其它需要认证的命令 加 -d 参数 会去默认账号的秘钥
-          ./qsuits -account=qiniu-iamc -ak=${{secrets.QINIU_AK}} -sk=${{secrets.QINIU_SK}} -d
+          chmod +x qshell
+          # 设置账户
+          ./qshell account -- ${{secrets.QINIU_AK}} ${{secrets.QINIU_SK}} iamc
 
       - name: 获取改变文件
         id: changedFiles
@@ -64,13 +56,13 @@ jobs:
         run: |
           # 单文件循环上传
           for changed_file in ${{steps.filterAll.outputs.files}}; do
-            ./qsuits -d -s -process=qupload -bucket=${{env.QINIU_BUCKET}} -filepath=$changed_file -key=$changed_file
+            ./qshell fput ${{env.QINIU_BUCKET}} $changed_file $changed_file --overwrite
           done
 
-      - name: 删除七牛云文件
-        if: ${{steps.filterDel.outputs.files}}
-        run: |
-          # 单文件循环删除
-          for changed_file in ${{steps.files.outputs.all}}; do
-            ./qsuits -d -s -process=delete -bucket=${{env.QINIU_BUCKET}} -key=$changed_file
-          done
+      # - name: 删除七牛云文件
+      #   if: ${{steps.filterDel.outputs.files}}
+      #   run: |
+      #     # 单文件循环删除
+      #     for changed_file in ${{steps.files.outputs.all}}; do
+      #       ./qshell fput ${{env.QINIU_BUCKET}} $changed_file
+      #     done
