@@ -57,6 +57,12 @@ do
   esac
 done
 
+echo "docker私库地址：$opt_registry_url"
+echo "镜像地址：$opt_image_url"
+echo "容器名称：$opt_image_url"
+echo "docker run 参数：$opt_docker_run_args"
+echo "要保存的库存数：$opt_stock"
+
 # 停止容器并删除容器
 docker stop $opt_container_name || true && docker rm $opt_container_name || true
 
