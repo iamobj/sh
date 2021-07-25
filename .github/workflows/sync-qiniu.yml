@@ -59,10 +59,10 @@ jobs:
             ./qshell fput ${{env.QINIU_BUCKET}} $changed_file $changed_file --overwrite
           done
 
-      # - name: 删除七牛云文件
-      #   if: ${{steps.filterDel.outputs.files}}
-      #   run: |
-      #     # 单文件循环删除
-      #     for changed_file in ${{steps.files.outputs.all}}; do
-      #       ./qshell fput ${{env.QINIU_BUCKET}} $changed_file
-      #     done
+      - name: 删除七牛云文件
+        if: ${{steps.filterDel.outputs.files}}
+        run: |
+          # 单文件循环删除
+          for changed_file in ${{steps.files.outputs.all}}; do
+            ./qshell delete ${{env.QINIU_BUCKET}} $changed_file
+          done
