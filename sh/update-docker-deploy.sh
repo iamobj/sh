@@ -20,7 +20,7 @@ if [[ $# == 0 ]] || [[ "$1" == "-h" ]]; then
 	exit 1
 fi
 
-ARGS=`getopt -o R:U:P:T:A:S: -l registry-url:,user-name:,password:,image-url:,docker-run-args:,stock: -n "$0" -- "$@"`
+ARGS=`getopt -o R:U:P:T:N:A:S: -l registry-url:,user-name:,password:,image-url:,container-name:,docker-run-args:,stock: -n "$0" -- "$@"`
 if [ $? != 0 ]; then
     echo "终止..."
     exit 1
