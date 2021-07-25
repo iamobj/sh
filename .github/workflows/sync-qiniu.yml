@@ -52,7 +52,7 @@ jobs:
           patterns: ${{env.BASE_FILE_PATTERNS}}
 
       - name: 上传到七牛云
-        if: ${{steps.filterUpload.outputs.files}}
+        if: steps.filterUpload.outputs.files
         run: |
           # 单文件循环上传
           for changed_file in ${{steps.filterUpload.outputs.files}}; do
@@ -60,7 +60,7 @@ jobs:
           done
 
       - name: 删除七牛云文件
-        if: ${{steps.filterDel.outputs.files}}
+        if: steps.filterDel.outputs.files
         run: |
           # 单文件循环删除
           for changed_file in ${{steps.filterDel.outputs.files}}; do
