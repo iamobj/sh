@@ -13,6 +13,5 @@
 github 的文件 url，没有那个字段，于是乎就想着自动同步到七牛云，国内服务器也方便下载。同时可以避免 github 被墙或慢导致下载一系列问题
 
 ## 脚本列表
-
-### update-docker-deploy.sh
-更新 docker 部署脚本，重拉镜像，重启容器
+### [update-docker-deploy.sh](https://github.com/iamobj/sh/blob/main/sh/update-docker-deploy.sh)
+更新 docker 部署脚本：重拉镜像，重启容器，支持删除镜像，可设置保留最近的几份

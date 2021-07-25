@@ -1,13 +1,14 @@
 #!/bin/sh
 ### 示例：
-### update-docker-deploy.sh -R ****.com -U iamobj --password 123456 -T "****:123" -A "--restart=always"
+### update-docker-deploy.sh -R ****.com -U iamobj --password 123456 -T "****:latest" -A "--restart=always"
 ### 参数：
-###   -R, --registry-url              docker 私库地址
+###   -R, --registry-url              docker私库地址
 ###   -U, --user-name                 私库登录用户名
 ###   -P, --password                  私库登录密码
-###   -T, --image-tag                 最新的镜像tag
+###   -T, --image-url                 最新的镜像地址，仓库名加tag eg：node:14
 ###   -N, --container-name            容器名称
 ###   -A, --docker-run-args           容器启动参数
+###   -S, --stock                     保存最新的几份镜像，值为0-不删除；默认3，保存最新的3份镜像，其余删掉
 set -e
 
 help() {
@@ -19,7 +20,7 @@ if [[ $# == 0 ]] || [[ "$1" == "-h" ]]; then
 	exit 1
 fi
 
-ARGS=`getopt -o R:U:P:T:A: -l registry-url:,user-name:,password:,image-tag:,docker-run-args: -n "$0" -- "$@"`
+ARGS=`getopt -o R:U:P:T:A:S: -l registry-url:,user-name:,password:,image-url:,docker-run-args:,stock: -n "$0" -- "$@"`
 if [ $? != 0 ]; then
     echo "终止..."
     exit 1
@@ -31,12 +32,14 @@ opt_registry_url=""
 opt_user_name=""
 # 私库登录密码
 opt_password=""
-# 镜像tag
-opt_image_tag=""
+# 镜像地址
+opt_image_url=""
 # 容器名称
 opt_container_name=""
 # docker run 参数
 opt_docker_run_args=""
+# 要保存的库存数
+opt_stock=3
 
 # 获取参数
 while [ -n "$1" ]
@@ -45,9 +48,10 @@ do
     -R|--registry-url) opt_registry_url=$2; shift 2;;
     -U|--user-name) opt_user_name=$2; shift 2;;
     -P|--password) opt_password=$2; shift 2;;
-    -T|--image-tag) opt_image_tag=$2; shift 2;;
+    -T|--image-url) opt_image_url=$2; shift 2;;
     -N|--container-name) opt_container_name=$2; shift 2;;
     -A|--docker-run-args) opt_docker_run_args=$2; shift 2;;
+    -S|--stock) opt_stock=$2; shift 2;;
     --) break ;;
     *) echo $1,$2,$show_usage; break ;;
   esac
@@ -60,10 +64,34 @@ docker stop $opt_container_name || true && docker rm $opt_container_name || true
 docker login $opt_registry_url -u $opt_user_name -p $opt_password
 
 # 拉取镜像
-docker pull $opt_image_tag
+docker pull $opt_image_url
 
 # 退出私库
 docker logout $opt_registry_url
+
+# 库存参数不等于0 就执行删除镜像逻辑
+if [ $opt_stock -ne 0 ]; then
+  # 获取镜像关键字 去除tag
+  keyword=${opt_image_url/:*/}
+  # 通过关键字列出镜像所有版本的镜像
+  image_ids=`docker image ls -q $keyword`
+
+  # 循环用的下标
+  i=0
+  # 接收需要删除镜像的目标ids
+  target_image_ids=""
+
+  # 收集 opt_stock 之后的镜像 id
+  for image_id in $image_ids; do
+    if [ $i -ge $opt_stock ]; then
+      target_image_ids="$target_image_ids $image_id"
+    fi
+    let i++
+  done
+
+  # 删除
+  docker image rm $target_image_ids
+fi
 
 # 启动
 docker run --name $opt_container_name $opt_docker_run_args -d $image_tag
